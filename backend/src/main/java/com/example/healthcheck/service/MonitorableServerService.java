@@ -29,10 +29,14 @@ public class MonitorableServerService {
       });
   }
 
-  public Mono<MonitorableServer> updateServer(MonitorableServer server, Long serverId) {
-    server.setId(serverId);
-    server.setUpdatedAt(LocalDateTime.now());
+  public Mono<MonitorableServer> updateServer(MonitorableServer newData, Long serverId) {
+    Mono<MonitorableServer> existingData = monitorableServerRepository.findById(serverId);
 
-    return monitorableServerRepository.save(server);
+    return existingData.flatMap(server -> {
+      server.setName(newData.getName());
+      server.setUrl(newData.getUrl());
+
+      return monitorableServerRepository.save(server);
+    });
   }
 }

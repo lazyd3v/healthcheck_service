@@ -1,5 +1,7 @@
 package com.example.healthcheck.resource;
 
+import javax.validation.Valid;
+
 import com.example.healthcheck.model.MonitorableServer;
 import com.example.healthcheck.repository.MonitorableServerRepository;
 import com.example.healthcheck.service.MonitorableServerService;
@@ -12,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(value = "/servers")
+@CrossOrigin
 public class MonitorableServerResource {
 
   @Autowired
@@ -22,7 +25,7 @@ public class MonitorableServerResource {
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Flux<MonitorableServer> getAllBooks() {
-    return monitorableServerRepository.findAll();
+    return monitorableServerRepository.findAllByOrderByIdAsc();
   }
 
   @GetMapping(value = "/{id}")
@@ -31,17 +34,17 @@ public class MonitorableServerResource {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Mono<MonitorableServer> addNewServer(@RequestBody MonitorableServer server) {
+  public Mono<MonitorableServer> addNewServer(@RequestBody @Valid MonitorableServer server) {
     return monitorableServerService.addNewServer(server);
   }
 
-  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value = "/{id}")
-  public Mono<MonitorableServer> updateServer(@RequestBody MonitorableServer serverDetails, @PathVariable Long serverId) {
+  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value = "/{serverId}")
+  public Mono<MonitorableServer> updateServer(@RequestBody @Valid MonitorableServer serverDetails, @PathVariable Long serverId) {
     return monitorableServerService.updateServer(serverDetails, serverId);
   }
 
-  @DeleteMapping(value = "/{id}")
-  public Mono<Void> delete(@PathVariable Long id) {
-      return monitorableServerRepository.deleteById(id);
+  @DeleteMapping(value = "/{serverId}")
+  public Mono<Void> delete(@PathVariable Long serverId) {
+      return monitorableServerRepository.deleteById(serverId);
   }
 }

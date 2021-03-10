@@ -6,3 +6,7 @@ spring:
     url: r2dbc:postgresql://localhost:5432/healthcheck_db
     username: postgres
     password:
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
